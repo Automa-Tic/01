@@ -25,27 +25,35 @@ bool cortina_status;
 void callback(char* topic, byte* payload, unsigned int length) {
   // Converte o payload para string
   String payloadStr = "";
-    for (int i = 0; i < length; i++) {
-        payloadStr += (char)payload[i];
-    }
-    // Verifica se o tópico é "lampada/status"
-    if (strcmp(topic, "lampada/status") == 0) {
-        lampada_status = (payloadStr == "ligada");
-    }
-    // Verifica se o tópico é "cortina/status"
-    if (strcmp(topic, "cortina/status") == 0) {
-        cortina_status = (payloadStr == "aberta");
-    }
-    // Verifica se o tópico é "lampada/ip"
-    if (strcmp(topic, "lampada/ip") == 0) {
-        lampada_ip = payloadStr;
-    }
-    // Verifica se o tópico é "cortina/ip"
-    if (strcmp(topic, "cortina/ip") == 0) {
-        cortina_ip = payloadStr;
-    }
+  for (int i = 0; i < length; i++) {
+    payloadStr += (char)payload[i];
+  }
+  // Verifica se o tópico é "lampada/status"
+  if (strcmp(topic, "lampada/status") == 0) {
+    lampada_status = (payloadStr == "ligada");
+  }
+  // Verifica se o tópico é "cortina/status"
+  if (strcmp(topic, "cortina/status") == 0) {
+    cortina_status = (payloadStr == "aberta");
+  }
 }
 
+void setup() {
+  WiFi.begin(ssid, password);
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(1000);
+    Serial.println("Conectando ao WiFi...");
+  }
+  Serial.println("Conectado ao WiFi");
+  
+  client.setServer(mqtt_server, mqtt_port);
+  client.setCallback(callback);
+  
+  // Publica um comando para a lâmpada se conectar e enviar seu endereço IP
+  client.publish("lampada/connect", "");
+  // Publica um comando para a cortina se conectar e enviar seu endereço IP
+  client.publish("cortina/connect", "");
+}
 void loop() {
     // Verifica se está conectado ao servidor MQTT
     if (!client.connected()) {
