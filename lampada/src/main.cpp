@@ -50,7 +50,7 @@ void setup() {
     client.setCallback(callback);
 
     // Publica o endereço IP da lâmpada
-    client.publish("lampada/ip", WiFi.localIP().toString());
+    client.publish("lampada/ip", WiFi.localIP().toString().c_str(), true);
     // Inscreve-se no tópico "lampada" para receber comandos
     client.subscribe("lampada");
 }
