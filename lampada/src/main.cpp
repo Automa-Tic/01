@@ -2,6 +2,11 @@
 #include <WiFi.h>
 #include <PubSubClient.h>
 
+#include <ArduinoOTA.h>
+#include <WebServer.h>
+
+#include "FS.h"
+
 // Informações de conexão WiFi
 const char* ssid = "your_SSID";
 const char* password = "your_PASSWORD";
