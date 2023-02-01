@@ -72,3 +72,6 @@ void loop() {
         client.publish("lampada/status", lampada_status ? "ligada" : "desligada");
     }
 }
+
+
+

@@ -4,9 +4,12 @@
 #include <ArduinoOTA.h>
 #include <WebServer.h>
 
+#include <SPI.h>
+#include <Arduino.h>
+
 // Informações de conexão WiFi
-const char* ssid = "your_SSID";
-const char* password = "your_PASSWORD";
+const char* ssid = "LIVE TIM_9BD2_2G";
+const char* password = "7qmdtfuceq";
 
 // Informações do servidor MQTT
 const char* mqtt_server = "your_MQTT_SERVER";
@@ -40,8 +43,29 @@ void callback(char* topic, byte* payload, unsigned int length) {
     cortina_status = (payloadStr == "aberta");
   }
 }
+void checkDevices() {
+// Verifica se a lâmpada está conectada
+  if (lampada_ip.length() == 0) {
+    Serial.println("Lâmpada não conectada");
+  } 
+  else {
+    Serial.println("Lâmpada conectada");
+  }
+  // Verifica se a cortina está conectada
+  if (cortina_ip.length() == 0) {
+    Serial.println("Cortina não conectada");
+  } 
+  else {
+    Serial.println("Cortina conectada");
+  }
+}
+ 
+int LED_BUILTIN = 2;
 
 void setup() {
+  Serial.begin(115200);
+  pinMode(LED_BUILTIN, OUTPUT);
+
   WiFi.begin(ssid, password);
   while (WiFi.status() != WL_CONNECTED) {
     delay(1000);
@@ -57,7 +81,13 @@ void setup() {
   // Publica um comando para a cortina se conectar e enviar seu endereço IP
   client.publish("cortina/connect", "");
 }
+
 void loop() {
+  digitalWrite (LED_BUILTIN, HIGH);
+  delay (1000);
+  digitalWrite (LED_BUILTIN, LOW);
+  delay (1000);
+
     // Verifica se está conectado ao servidor MQTT
     if (!client.connected()) {
         client.connect("central", mqtt_user, mqtt_password);
@@ -87,6 +117,10 @@ void loop() {
             // Envia o comando para a cortina
             client.publish("cortina", "fechar");
         }
+        // Verifica se o comando é "check devices"
+        if (command == "check devices") {
+        checkDevices();
+      }
     }
     // Imprime o status da lâmpada e da cortina
     Serial.print("Lâmpada: ");
