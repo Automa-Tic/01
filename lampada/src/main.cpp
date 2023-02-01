@@ -8,8 +8,8 @@
 #include "FS.h"
 
 // Informações de conexão WiFi
-const char* ssid = "your_SSID";
-const char* password = "your_PASSWORD";
+const char* ssid = "LIVE TIM_9BD2_2G";
+const char* password = "7qmdtfuceq";
 
 // Informações do servidor MQTT
 const char* mqtt_server = "your_MQTT_SERVER";
@@ -21,6 +21,7 @@ WiFiClient espClient;
 PubSubClient client(espClient);
 
 // Variáveis para armazenar o estado da lâmpada
+const char* lampada_ip = "lampada_01";
 bool lampada_status = false;
 
 void callback(char* topic, byte* payload, unsigned int length) {
